@@ -1,0 +1,32 @@
+{
+  "name": "ripa-genesis-redistribution",
+  "version": "1.0.0",
+  "description": "Early forgers redistribution pool",
+  "main": "payments.js",
+  "scripts": {
+    "start": "node payments.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "jquery": "^3.3.1",
+    "ripajs": "git://github.com/RipaEx/ripa-js.git#master",
+    "kapuwrapper": "^0.1.2",
+    "request": "^2.83.0",
+    "winston": "^2.4.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RipaEx/ripa-genesis-redistribution.git"
+  },
+  "keywords": [
+    "ripa",
+    "genesis",
+    "redistribution"
+  ],
+  "author": "Giovanni Silvestri <gsit80@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/RipaEx/ripa-genesis-redistribution/issues"
+  },
+  "homepage": "https://github.com/RipaEx/ripa-genesis-redistribution#readme"
+}
