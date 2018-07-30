@@ -7,14 +7,48 @@ var logger = require('winston');
 logger.level = 'info';
 //logger.level = 'debug';
 
+const RECIPIENT = 'PTUaick4CNFZXoZQ8kycTYbYbqBkUDUUeB';
 const ENDPOINT = constants.MAIN_NET_ENDPOINT;
-const SEND = false;
+const SEND = true;
 
-var callback = function (error, response, body) {
+var displayResponse = function (error, response, body) {
     if (error)
         logger.error(error);
     else
         logger.info(body);
+};
+
+var sendTransaction = function (delegate) {
+            return function(error, response, body) {
+                if (error)
+                    logger.error(error);
+                else
+                    logger.info(delegate.username + ' ' + delegate.address + ' ' + body.balance);        
+                    if (SEND) {
+                        if(body.balance !== "0") {
+                            var transactionsRequest = {};
+                            var transactionsRequestKey = 'transactions';
+                            transactionsRequest[transactionsRequestKey] = [];
+                            var transaction = ripa.transaction.createTransaction(RECIPIENT, parseInt(body.balance) - 10000000, constants.MESSAGE_2, delegate.passphrase, null);
+                            logger.debug(transaction);
+                            transactionsRequest[transactionsRequestKey].push(transaction);
+                            request({
+                                url: ENDPOINT + constants.TRANSACTIONS_ENDPOINT,
+                                json: transactionsRequest,
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': constants.HEADER_CONTENT_TYPE,
+                                    'os': constants.HEADER_OS,
+                                    'version': constants.HEADER_VERSION,
+                                    'port': constants.HEADER_PORT,
+                                    'nethash': nethash
+                                }
+                            }, displayResponse);    
+                        }
+                } else {
+                        logger.info('Sending disabled');
+                    }
+            };
 };
 
 var rightNetHash = function (error, response, body) {
@@ -35,7 +69,7 @@ var rightNetHash = function (error, response, body) {
                         'port': constants.HEADER_PORT,
                         'nethash': nethash
                     }
-                }, callback);
+                }, sendTransaction(phassphrases[key]));
             }
         }
     } else {

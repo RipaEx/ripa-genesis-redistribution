@@ -8,7 +8,8 @@ const HEADER_OS = 'ripa-pool';
 const HEADER_PORT = 5500;
 const HEADER_VERSION = require('./package.json').version;
 const PRECISION = 8;
-const MESSAGE_1 = 'early forgers sharing: thank You for your support';
+const MESSAGE_1 = 'Early Forgers Sharing: thank You for your support';
+const MESSAGE_2 = 'Genesis redistribution';
 
 module.exports = {
     MAIN_NET_ENDPOINT: MAIN_NET_ENDPOINT,
@@ -22,6 +23,7 @@ module.exports = {
     HEADER_VERSION: HEADER_VERSION,
     PRECISION: PRECISION,
     MESSAGE_1: MESSAGE_1,
+    MESSAGE_2: MESSAGE_2,
     roundDown: function (number, decimals) {
         decimals = decimals || 0;
         return (Math.floor(number * Math.pow(10, decimals)) / Math.pow(10, decimals));
