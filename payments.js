@@ -1,6 +1,7 @@
 var ripa = require('ripajs');
 var request = require('request');
 var phassphrases = require('./delegatesPassphrases');
+var delegates = require('./delegates');
 var constants = require('./constants');
 //var payments = require('./payments');
 var logger = require('winston');
@@ -19,36 +20,36 @@ var displayResponse = function (error, response, body) {
 };
 
 var sendTransaction = function (delegate) {
-            return function(error, response, body) {
-                if (error)
-                    logger.error(error);
-                else
-                    logger.info(delegate.username + ' ' + delegate.address + ' ' + body.balance);        
-                    if (SEND) {
-                        if(body.balance !== "0") {
-                            var transactionsRequest = {};
-                            var transactionsRequestKey = 'transactions';
-                            transactionsRequest[transactionsRequestKey] = [];
-                            var transaction = ripa.transaction.createTransaction(RECIPIENT, parseInt(body.balance) - 10000000, constants.MESSAGE_2, delegate.passphrase, null);
-                            logger.debug(transaction);
-                            transactionsRequest[transactionsRequestKey].push(transaction);
-                            request({
-                                url: ENDPOINT + constants.TRANSACTIONS_ENDPOINT,
-                                json: transactionsRequest,
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': constants.HEADER_CONTENT_TYPE,
-                                    'os': constants.HEADER_OS,
-                                    'version': constants.HEADER_VERSION,
-                                    'port': constants.HEADER_PORT,
-                                    'nethash': nethash
-                                }
-                            }, displayResponse);    
-                        }
-                } else {
-                        logger.info('Sending disabled');
+    return function (error, response, body) {
+        if (error)
+            logger.error(error);
+        else
+            logger.info(delegate.username + ' ' + delegate.address + ' ' + body.balance);
+        if (SEND) {
+            if (body.balance !== "0") {
+                var transactionsRequest = {};
+                var transactionsRequestKey = 'transactions';
+                transactionsRequest[transactionsRequestKey] = [];
+                var transaction = ripa.transaction.createTransaction(RECIPIENT, parseInt(body.balance) - 10000000, constants.MESSAGE_2, delegate.passphrase, null);
+                logger.debug(transaction);
+                transactionsRequest[transactionsRequestKey].push(transaction);
+                request({
+                    url: ENDPOINT + constants.TRANSACTIONS_ENDPOINT,
+                    json: transactionsRequest,
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': constants.HEADER_CONTENT_TYPE,
+                        'os': constants.HEADER_OS,
+                        'version': constants.HEADER_VERSION,
+                        'port': constants.HEADER_PORT,
+                        'nethash': nethash
                     }
-            };
+                }, displayResponse);
+            }
+        } else {
+            logger.info('Sending disabled');
+        }
+    };
 };
 
 var rightNetHash = function (error, response, body) {
@@ -96,4 +97,13 @@ if (phassphrases !== null) {
     }, rightNetHash);
 } else {
     logger.error("ERROR: payments file is empty");
+}
+
+if (delegates !== null) {
+    var delegatesArray = delegates.delegates;
+    for (var key in delegatesArray) {
+        if (delegatesArray.hasOwnProperty(key)) {
+            console.log(delegatesArray[key].address);
+        }
+    }
 }
